@@ -93,12 +93,14 @@ Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
 #include "application_commands.h"
 #include "LED.h"
 #include "Nokia5110.h"
+#include "ST7735.h"
+#include "tm4c123gh6pm.h"
 #include <string.h>
 //#define SSID_NAME  "valvanoAP" /* Access point name to connect to */
 #define SEC_TYPE   SL_SEC_TYPE_WPA
 //#define PASSKEY    "12345678"  /* Password in case of secure AP */ 
-#define SSID_NAME  "ValvanoJonathaniPhone"
-#define PASSKEY    "y2uvdjfi5puyd"
+#define SSID_NAME  "Saadallah"
+#define PASSKEY    "123456789"
 #define BAUD_RATE   115200
 void UART_Init(void){
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
@@ -200,18 +202,96 @@ void Crash(uint32_t time){
     LED_RedToggle();
   }
 }
+
+char* getTemp(char recvbuff[]){
+	int i = 0;
+	char* tempString = "Temp = **.*** C\n";
+	while(recvbuff[i] != NULL){
+		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e' && recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'){
+			i += 6;
+			if(recvbuff[i] == '0'){
+				tempString[7] = ' ';
+			}else{
+				tempString[7] = recvbuff[i];
+			}
+			i++;
+			int j = 0;
+			while(recvbuff[i+j] != ','){
+				tempString[j+8] = recvbuff[i+j];
+				j++;
+			}
+			for(int k = j; k < 5; k++){
+				tempString[k+8] = '0';
+			}
+			
+			return tempString;
+		}
+		i++;
+	}
+	return tempString;
+}
+
+void screen_Init(){
+	ST7735_InitR(INITR_REDTAB);
+	ST7735_FillScreen(ST7735_BLACK);
+
+	ST7735_SetCursor(0,0);
+}
+
+void ADC0_InitSWTriggerSeq3_Ch9(uint32_t sampling){ 
+  SYSCTL_RCGCADC_R |= 0x0001;     // 7) activate ADC0                               
+  SYSCTL_RCGCGPIO_R |= 0x10;      // 1) activate clock for Port E
+  while((SYSCTL_PRGPIO_R&0x10) != 0x10){};
+  GPIO_PORTE_DIR_R &= ~0x10;      // 2) make PE4 input
+  GPIO_PORTE_AFSEL_R |= 0x10;     // 3) enable alternate function on PE4
+  GPIO_PORTE_DEN_R &= ~0x10;      // 4) disable digital I/O on PE4
+  GPIO_PORTE_AMSEL_R |= 0x10;     // 5) enable analog functionality on PE4
+  
+//  while((SYSCTL_PRADC_R&0x0001) != 0x0001){};    // good code, but not yet implemented in simulator
+
+	
+  ADC0_PC_R &= ~0xF;              // 7) clear max sample rate field
+  ADC0_PC_R |= 0x1;               //    configure for 125K samples/sec
+  ADC0_SSPRI_R = 0x0123;          // 8) Sequencer 3 is highest priority
+  ADC0_ACTSS_R &= ~0x0008;        // 9) disable sample sequencer 3
+  ADC0_EMUX_R &= ~0xF000;         // 10) seq3 is software trigger
+  ADC0_SSMUX3_R &= ~0x000F;       // 11) clear SS3 field
+  ADC0_SSMUX3_R += 9;             //    set channel
+  ADC0_SSCTL3_R = 0x0006;         // 12) no TS0 D0, yes IE0 END0
+  ADC0_IM_R &= ~0x0008;           // 13) disable SS3 interrupts
+  ADC0_ACTSS_R |= 0x0008;         // 14) enable sample sequencer 3
+	ADC0_SAC_R |= sampling;					// 15) sets the sampling rate to x0, x2, x4, x8, x16, x32, or x64
+}
+
+//------------ADC0_InSeq3------------
+// Busy-wait Analog to digital conversion
+// Input: none
+// Output: 12-bit result of ADC conversion
+uint32_t ADC0_InSeq3(void){  
+	uint32_t result;
+  ADC0_PSSI_R = 0x0008;            // 1) initiate SS3
+  while((ADC0_RIS_R&0x08)==0){};   // 2) wait for conversion done
+    // if you have an A0-A3 revision number, you need to add an 8 usec wait here
+  result = ADC0_SSFIFO3_R&0xFFF;   // 3) read result
+  ADC0_ISC_R = 0x0008;             // 4) acknowledge completion
+  return result;
+}
+volatile uint32_t ADCValue;
 /*
  * Application's entry point
  */
 // 1) change Austin Texas to your city
 // 2) you can change metric to imperial if you want temperature in F
-#define REQUEST "GET /data/2.5/weather?q=Austin%20Texas&APPID=1bc54f645c5f1c75e681c102ed4bbca4&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n"
+#define REQUEST "GET /data/2.5/weather?q=Austin%20Texas&APPID=ece513362a37e524f6ae0fa83f9db120&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n"
 // 1) go to http://openweathermap.org/appid#use 
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 int main(void){int32_t retVal;  SlSecParams_t secParams;
-  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
+  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; char *temperature;
+	char *adc;
   initClk();        // PLL 50 MHz
+	screen_Init();
+	ADC0_InitSWTriggerSeq3_Ch9(6);
   UART_Init();      // Send data to PC, 115200 bps
   LED_Init();       // initialize LaunchPad I/O 
   UARTprintf("Weather App\n");
@@ -249,10 +329,26 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
         LED_GreenOn();
         UARTprintf("\r\n\r\n");
         UARTprintf(Recvbuff);  UARTprintf("\r\n");
+				
+				temperature = getTemp(Recvbuff);
+				ADCValue = ADC0_InSeq3();
+				int voltage = (ADCValue * 3300 / 4096);
+//				sprintf(adc,"Voltage: %d",voltage);
+				
+				adc = "Voltage: *.***";
+				adc[9] = (voltage/1000) + 0x30;
+				adc[11] = ((voltage/100) % 10) + 0x30;
+				adc[12] = ((voltage/10) % 10) + 0x30;
+				adc[13] = ((voltage % 10)) + 0x30;
+				
+				ST7735_OutString(temperature);
+				ST7735_OutString(adc);
+				ST7735_OutUDec(voltage);
       }
     }
     while(Board_Input()==0){}; // wait for touch
     LED_GreenOff();
+		ST7735_SetCursor(0,0);
   }
 }
 
