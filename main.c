@@ -96,12 +96,15 @@ Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
 #include "ST7735.h"
 #include "tm4c123gh6pm.h"
 #include <string.h>
+#include <stdio.h>
 //#define SSID_NAME  "valvanoAP" /* Access point name to connect to */
 #define SEC_TYPE   SL_SEC_TYPE_WPA
 //#define PASSKEY    "12345678"  /* Password in case of secure AP */ 
-#define SSID_NAME  "Saadallah"
-#define PASSKEY    "123456789"
+#define SSID_NAME  "Faisal"
+#define PASSKEY    "dpmx1476"
 #define BAUD_RATE   115200
+
+#define REQUEST1 "GET /query?city=Austin&id=CooperFaisal&greet=1.765&edxcode=8086 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-fm7869.appspot.com\r\n\r\n"
 void UART_Init(void){
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
@@ -212,16 +215,16 @@ char* getTemp(char recvbuff[]){
 			if(recvbuff[i] == '0'){
 				tempString[7] = ' ';
 			}else{
-				tempString[7] = recvbuff[i];
+				tempString[7] = (char) recvbuff[i];
 			}
 			i++;
 			int j = 0;
 			while(recvbuff[i+j] != ','){
-				tempString[j+8] = recvbuff[i+j];
+				tempString[j+8] = (char) recvbuff[i+j];
 				j++;
 			}
 			for(int k = j; k < 5; k++){
-				tempString[k+8] = '0';
+				tempString[k+8] = (char) '0';
 			}
 			
 			return tempString;
@@ -288,7 +291,7 @@ volatile uint32_t ADCValue;
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 int main(void){int32_t retVal;  SlSecParams_t secParams;
   char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; char *temperature;
-	char *adc;
+	char *adc = "Voltage: 1.675";
   initClk();        // PLL 50 MHz
 	screen_Init();
 	ADC0_InitSWTriggerSeq3_Ch9(6);
@@ -335,15 +338,36 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 				int voltage = (ADCValue * 3300 / 4096);
 //				sprintf(adc,"Voltage: %d",voltage);
 				
-				adc = "Voltage: *.***";
-				adc[9] = (voltage/1000) + 0x30;
-				adc[11] = ((voltage/100) % 10) + 0x30;
-				adc[12] = ((voltage/10) % 10) + 0x30;
-				adc[13] = ((voltage % 10)) + 0x30;
+				sprintf(adc,"Voltage: %01d .\b %01d %01d %01d", ((voltage/1000)),
+					((voltage/100)), ((voltage/10)%10),((voltage%10)));
+				
+//				adc[9] = (char) ((voltage/1000) + 0x30);
+//				adc[11] = (char) (((voltage/100) % 10) + 0x30);
+//				adc[12] = (char) (((voltage/10) % 10) + 0x30);
+//				adc[13] = (char) (((voltage % 10)) + 0x30);
 				
 				ST7735_OutString(temperature);
 				ST7735_OutString(adc);
-				ST7735_OutUDec(voltage);
+				
+				strcpy(HostName,"ee445l-fm7869.appspot.com"); // works 9/2016
+				retVal = sl_NetAppDnsGetHostByName(HostName,
+             strlen(HostName),&DestinationIP, SL_AF_INET);
+				if(retVal == 0){
+					Addr.sin_family = SL_AF_INET;
+					Addr.sin_port = sl_Htons(80);
+					Addr.sin_addr.s_addr = sl_Htonl(DestinationIP);// IP to big endian 
+					ASize = sizeof(SlSockAddrIn_t);
+					SockID = sl_Socket(SL_AF_INET,SL_SOCK_STREAM, 0);
+					if( SockID >= 0 ){
+						retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
+					}
+					if((SockID >= 0)&&(retVal >= 0)){
+						strcpy(SendBuff,REQUEST1); 
+						sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
+						sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
+						sl_Close(SockID);
+						}
+					}
       }
     }
     while(Board_Input()==0){}; // wait for touch

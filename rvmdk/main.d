@@ -41,3 +41,4 @@
 .\rvmdk\main.o: Nokia5110.h
 .\rvmdk\main.o: ST7735.h
 .\rvmdk\main.o: tm4c123gh6pm.h
+.\rvmdk\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
