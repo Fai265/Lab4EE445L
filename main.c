@@ -210,14 +210,14 @@ void Crash(uint32_t time){
 int parseJSON(char recvbuff[]){
 	int i = 0;
 	int timeFlag = 0; int tempFlag = 0;
-	char tempString[16] = "Temp = **.*** C\n";
-	char timeString[16] = "Time = **:**:**\n";
+	char tempString[17] = "Temp = **.*** C\n";
+	char timeString[17] = "Time = **:**:**\n";
 	while(recvbuff[i] != NULL){
 		if(recvbuff[i] == 'D' && recvbuff[i+1] == 'a'
 				&& recvbuff[i+2] == 't' && recvbuff[i+3] == 'e'){
 				i += 23;
-				int k = 8;	//Start of the time values in timeString
-				for(int j = 0; j < 9; j++){
+				int k = 7;	//Start of the time values in timeString
+				for(int j = 0; j < 8; j++){
 					if(k == 10 || k == 13){
 						k++;
 					}
@@ -225,11 +225,13 @@ int parseJSON(char recvbuff[]){
 				}
 				
 				ST7735_OutString(timeString);
+				//ST7735_OutString("\n");
 				timeFlag = 1;
 		}
 		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e'//Looks for "temp" in the string
-				&& recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'){
-					i += 6;																//Set the index to after "temp":
+				&& recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'
+				&& recvbuff[i+4] == '"'){
+			i += 6;																		//Set the index to after "temp":
 			if(recvbuff[i] == '0'){										//If temperature is not double-digit
 				tempString[7] = ' ';										//Space instead of '0' for first char
 			}else{
@@ -336,6 +338,8 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
     _SlNonOsMainLoopTask();
   }
   UARTprintf("Connected\n");
+	int callCount = 0;
+	int timeTaken[10];
   while(1){
    // strcpy(HostName,"openweathermap.org");  // used to work 10/2015
     strcpy(HostName,"api.openweathermap.org"); // works 9/2016
@@ -352,10 +356,11 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
       }
       if((SockID >= 0)&&(retVal >= 0)){
         strcpy(SendBuff,REQUEST); 
-				//start
+				int startTime=NVIC_ST_CURRENT_R;
         sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
         sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
-				//stop
+				int endTime=NVIC_ST_CURRENT_R;
+				timeTaken[callCount]=startTime-endTime;
         sl_Close(SockID);
         LED_GreenOn();
         UARTprintf("\r\n\r\n");
@@ -394,6 +399,14 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
     while(Board_Input()==0){}; // wait for touch
     LED_GreenOff();
 		ST7735_SetCursor(0,0);
+		callCount++;
+		if(callCount==10){
+            int average=0; 
+            for(int i=0;i<10;i++){
+                average+=timeTaken[i];
+            }
+            average/=10;
+    }
   }
 }
 
