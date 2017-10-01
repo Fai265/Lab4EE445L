@@ -193,6 +193,9 @@ UINT32  g_Status = 0;
  */
 
 static int32_t configureSimpleLinkToDefaultState(char *);
+static int hour;
+static int minute;
+static int second;
 
 
 /*
@@ -216,16 +219,34 @@ int parseJSON(char recvbuff[]){
 		if(recvbuff[i] == 'D' && recvbuff[i+1] == 'a'
 				&& recvbuff[i+2] == 't' && recvbuff[i+3] == 'e'){
 				i += 23;
-				int k = 7;	//Start of the time values in timeString
-				for(int j = 0; j < 8; j++){
-					if(k == 10 || k == 13){
-						k++;
-					}
-					timeString[k+j] = recvbuff[i+j];
-				}
+				int j = 0;
+				hour = (int) (recvbuff[i + j] - 0x30) * 10 
+					+ (int) (recvbuff[i + j + 1] - 0x30);
+				
+				hour = (hour + 19) % 24;	//Convert from GMT to CST
+				
+				timeString[7 + j] = (char) ((hour / 10) + 0x30);
+				timeString[7 + j + 1] = (char) ((hour % 10) + 0x30);
+				
+				j += 3;
+				
+				minute = (int) (recvbuff[i + j] - 0x30) * 10 
+					+ (int) (recvbuff[i + j + 1] - 0x30);
+				
+				timeString[7 + j] = (char) ((minute / 10) + 0x30);
+				timeString[7 + j + 1] = (char) ((minute % 10) + 0x30);
+				
+				j += 3;
+				
+				second = (int) (recvbuff[i + j] - 0x30) * 10 
+					+ (int) (recvbuff[i + j + 1] - 0x30);
+
+				timeString[7 + j] = (char) ((second / 10) + 0x30);
+				timeString[7 + j + 1] = (char) ((second % 10) + 0x30);
+				
+				j += 3;
 				
 				ST7735_OutString(timeString);
-				//ST7735_OutString("\n");
 				timeFlag = 1;
 		}
 		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e'//Looks for "temp" in the string

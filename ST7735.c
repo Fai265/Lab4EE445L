@@ -1624,6 +1624,52 @@ int Return_XPos(void){
 int Return_YPos(void){
 	return StY;
 }
+
+//*************ST7735_BresenhamLine*******************************************
+//Draws one line on the ST7735 color LCD using Bresenham's Line Algorithm
+void ST7735_BresenhamLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
+	 uint16_t color){
+	if (x1 == x2){					//points are directly vertical of each other
+		if(y1 < y2){
+			ST7735_DrawFastVLine(x1, y1,abs(y2-y1), color);
+		}else{
+			ST7735_DrawFastVLine(x1, y2,abs(y1-y2), color);
+		}
+	}
+	
+	if (y1 == y2){					//points are directly horizontal of each other
+		if(x1 < x2){
+			ST7735_DrawFastHLine(x1, y1, abs(x1-x2), color);
+		}else{
+			ST7735_DrawFastHLine(x2, y1, abs(x2-x1), color);
+		}
+	}
+	
+	int dx = abs(x2-x1);
+	int sx = x1<x2 ? 1 : -1;
+	int dy = abs(y2-y1);
+	int sy = y1<y2 ? 1 : -1;
+	int err = (dx>dy ? dx : -dy)/2;
+	int e2;
+	
+	for(;;){
+		ST7735_DrawPixel(x1, y1, color);
+		if(x1 == x2 && y1 == y2){
+			break;
+		}
+		e2 = err;
+		if(e2 > -dx){
+			err -= dy;
+			x1 += sx;
+		}
+		if(e2 < dy){
+			err += dx;
+			y1 += sy;
+		}
+	}	
+}
+
+/*
 //*************ST7735_Line*******************************************
 //Draws one line on the ST7735 color LCD using Bresenham's Line Algorithm
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
@@ -1732,3 +1778,4 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 //	}
 	
 }
+*/
