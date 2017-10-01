@@ -42,3 +42,4 @@
 .\rvmdk\main.o: ST7735.h
 .\rvmdk\main.o: tm4c123gh6pm.h
 .\rvmdk\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\rvmdk\main.o: ..\SysTick_4C123\SysTick.h

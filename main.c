@@ -97,11 +97,12 @@ Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
 #include "tm4c123gh6pm.h"
 #include <string.h>
 #include <stdio.h>
+#include "..\SysTick_4C123\SysTick.h"
 //#define SSID_NAME  "valvanoAP" /* Access point name to connect to */
 #define SEC_TYPE   SL_SEC_TYPE_WPA
 //#define PASSKEY    "12345678"  /* Password in case of secure AP */ 
-#define SSID_NAME  "Cooper's iphone"
-#define PASSKEY    "password"
+#define SSID_NAME  "Faisal"
+#define PASSKEY    "dpmx1476"
 #define BAUD_RATE   115200
 
 #define REQUEST1 "GET /query?city=Austin&id=CooperFaisal&greet=1.765&edxcode=8086 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-fm7869.appspot.com\r\n\r\n"
@@ -206,32 +207,54 @@ void Crash(uint32_t time){
   }
 }
 
-char* getTemp(char recvbuff[]){
+int parseJSON(char recvbuff[]){
 	int i = 0;
-	char* tempString = "Temp = **.*** C\n";
+	int timeFlag = 0; int tempFlag = 0;
+	char tempString[16] = "Temp = **.*** C\n";
+	char timeString[16] = "Time = **:**:**\n";
 	while(recvbuff[i] != NULL){
-		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e' && recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'){
-			i += 6;
-			if(recvbuff[i] == '0'){
-				tempString[7] = ' ';
+		if(recvbuff[i] == 'D' && recvbuff[i+1] == 'a'
+				&& recvbuff[i+2] == 't' && recvbuff[i+3] == 'e'){
+				i += 23;
+				int k = 8;	//Start of the time values in timeString
+				for(int j = 0; j < 9; j++){
+					if(k == 10 || k == 13){
+						k++;
+					}
+					timeString[k+j] = recvbuff[i+j];
+				}
+				
+				ST7735_OutString(timeString);
+				timeFlag = 1;
+		}
+		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e'//Looks for "temp" in the string
+				&& recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'){
+					i += 6;																//Set the index to after "temp":
+			if(recvbuff[i] == '0'){										//If temperature is not double-digit
+				tempString[7] = ' ';										//Space instead of '0' for first char
 			}else{
 				tempString[7] = (char) recvbuff[i];
 			}
 			i++;
 			int j = 0;
-			while(recvbuff[i+j] != ','){
-				tempString[j+8] = (char) recvbuff[i+j];
+			while(recvbuff[i+j] != ','){							//While there are still number values from json
+				tempString[j+8] = (char) recvbuff[i+j];	//Fill into tempString
 				j++;
 			}
-			for(int k = j; k < 5; k++){
-				tempString[k+8] = (char) '0';
+			for(int k = j; k < 5; k++){								//If you run out of number values before 3 decimal
+				tempString[k+8] = (char) '0';						//places, fill in 0's for the remainder
 			}
 			
-			return tempString;
+			tempString[9] = '.';
+			ST7735_OutString(tempString);
+			
+			tempFlag = 1;
+			
 		}
 		i++;
 	}
-	return tempString;
+	if(timeFlag == 1 && tempFlag == 1){return 1;}
+	else{return 0;}
 }
 
 void screen_Init(){
@@ -290,13 +313,16 @@ volatile uint32_t ADCValue;
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 int main(void){int32_t retVal;  SlSecParams_t secParams;
-  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; char *temperature = "Temp = **.*** C\n";
-	char *adc = "Voltage: 1.675";
+  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
+	//char temperature[16] = "Temp = **.*** C\n";
+	//char adc[14] = "Voltage: *.***";
+	char adc[14] = "";
   initClk();        // PLL 50 MHz
 	screen_Init();
 	ADC0_InitSWTriggerSeq3_Ch9(6);
   UART_Init();      // Send data to PC, 115200 bps
   LED_Init();       // initialize LaunchPad I/O 
+	SysTick_Init();
   UARTprintf("Weather App\n");
   retVal = configureSimpleLinkToDefaultState(pConfig); // set policies
   if(retVal < 0)Crash(4000000);
@@ -326,27 +352,22 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
       }
       if((SockID >= 0)&&(retVal >= 0)){
         strcpy(SendBuff,REQUEST); 
+				//start
         sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
         sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
+				//stop
         sl_Close(SockID);
         LED_GreenOn();
         UARTprintf("\r\n\r\n");
         UARTprintf(Recvbuff);  UARTprintf("\r\n");
-				
-				strcpy(temperature, getTemp(Recvbuff));
+
 				ADCValue = ADC0_InSeq3();
 				int voltage = (ADCValue * 3300 / 4096);
-//				sprintf(adc,"Voltage: %d",voltage);
 				
-				sprintf(adc,"Voltage: %01d .\b %01d %01d %01d", ((voltage/1000)),
-					((voltage/100)), ((voltage/10)%10),((voltage%10)));
+				sprintf(adc,"Voltage: %01d.%01d%01d%01d\n", ((voltage/1000)),
+					((voltage/100)%10), ((voltage/10)%10),((voltage%10)));
 				
-//				adc[9] = (char) ((voltage/1000) + 0x30);
-//				adc[11] = (char) (((voltage/100) % 10) + 0x30);
-//				adc[12] = (char) (((voltage/10) % 10) + 0x30);
-//				adc[13] = (char) (((voltage % 10)) + 0x30);
-				
-				ST7735_OutString(temperature);
+				parseJSON(Recvbuff);
 				ST7735_OutString(adc);
 				
 				strcpy(HostName,"ee445l-fm7869.appspot.com"); // works 9/2016
