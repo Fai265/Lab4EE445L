@@ -100,8 +100,8 @@ Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
 //#define SSID_NAME  "valvanoAP" /* Access point name to connect to */
 #define SEC_TYPE   SL_SEC_TYPE_WPA
 //#define PASSKEY    "12345678"  /* Password in case of secure AP */ 
-#define SSID_NAME  "Faisal"
-#define PASSKEY    "dpmx1476"
+#define SSID_NAME  "Cooper's iphone"
+#define PASSKEY    "password"
 #define BAUD_RATE   115200
 
 #define REQUEST1 "GET /query?city=Austin&id=CooperFaisal&greet=1.765&edxcode=8086 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-fm7869.appspot.com\r\n\r\n"
@@ -290,7 +290,7 @@ volatile uint32_t ADCValue;
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 int main(void){int32_t retVal;  SlSecParams_t secParams;
-  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; char *temperature;
+  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; char *temperature = "Temp = **.*** C\n";
 	char *adc = "Voltage: 1.675";
   initClk();        // PLL 50 MHz
 	screen_Init();
@@ -333,7 +333,7 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
         UARTprintf("\r\n\r\n");
         UARTprintf(Recvbuff);  UARTprintf("\r\n");
 				
-				temperature = getTemp(Recvbuff);
+				strcpy(temperature, getTemp(Recvbuff));
 				ADCValue = ADC0_InSeq3();
 				int voltage = (ADCValue * 3300 / 4096);
 //				sprintf(adc,"Voltage: %d",voltage);
