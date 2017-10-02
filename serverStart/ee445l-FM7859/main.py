@@ -69,9 +69,19 @@ class MainPage(webapp2.RequestHandler):
         greetings = greetings_query.fetch()
         # [END query]
 
+        response = '<b>%s@%s</b>: <i>%s</i> <img src="%s.png" alt="%s" style="width:32px;height:32px;"> (accessed from %s) '
         for greeting in greetings:
-            self.response.write('<b>%s@%s</b>: <i>%s</i> <img src="Clear.png" alt="%s" style="width:32px;height:32px;"> (accessed from %s) ' %
-                                        (greeting.author, greeting.city, greeting.greet, greeting.greet, greeting.ipaddr))
+            if(greeting.greet in {'Clear', 'Clouds', 'Rain', 'Snow', 'Haze'}):
+                self.response.write( response % (greeting.author, greeting.city, greeting.greet, greeting.greet, greeting.greet, greeting.ipaddr))
+            else:
+                self.response.write('<b>%s@%s</b>: <i>%s</i> <img src="Clear.png" alt="Clear" style="width:32px;height:32px;"> (accessed from %s) ' %
+                                            (greeting.author, greeting.city, greeting.greet, greeting.ipaddr))
+            # except:
+            #     self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s) ' % (greeting.author, greeting.city, greeting.greet, greeting.ipaddr))
+
+
+            # self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s) ' %
+            #                             (greeting.author, greeting.city, greeting.greet, greeting.ipaddr))
             self.response.write('<hr>')
 
 class Auto(webapp2.RequestHandler):

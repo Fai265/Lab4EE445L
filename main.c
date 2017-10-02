@@ -173,6 +173,7 @@ typedef struct{
 char Recvbuff[MAX_RECV_BUFF_SIZE];
 char SendBuff[MAX_SEND_BUFF_SIZE];
 char HostName[MAX_HOSTNAME_SIZE];
+char GetRequest[MAX_SEND_BUFF_SIZE];
 unsigned long DestinationIP;
 int SockID;
 
@@ -185,6 +186,11 @@ typedef enum{
 
 }e_Status;
 UINT32  g_Status = 0;
+
+
+static int hour;
+static int minute;
+static int second;
 /*
  * GLOBAL VARIABLES -- End
  */
@@ -194,11 +200,8 @@ UINT32  g_Status = 0;
  * STATIC FUNCTION DEFINITIONS  -- Start
  */
 
-static int32_t configureSimpleLinkToDefaultState(char *);
-static int hour;
-static int minute;
-static int second;
 
+static int32_t configureSimpleLinkToDefaultState(char *);
 
 /*
  * STATIC FUNCTION DEFINITIONS -- End
@@ -233,7 +236,7 @@ int parseJSON(char recvbuff[]){
 			}
 			weatherString[weatherIndex] = '\0';
 			
-			sprintf(REQUEST1, weatherString);
+			sprintf(GetRequest, REQUEST1, weatherString);
 		}
 		if(recvbuff[i] == 'D' && recvbuff[i+1] == 'a'
 				&& recvbuff[i+2] == 't' && recvbuff[i+3] == 'e'){
@@ -421,16 +424,16 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 				sprintf(adc,"Voltage: %01d.%01d%01d%01d\n", ((voltage/1000)),
 					((voltage/100)%10), ((voltage/10)%10),((voltage%10)));
 				if(packetRx > 0){
-					sprintf(lostPacket,"Packet Loss: %d\n", (packetRx - packetTx));
+					sprintf(lostPacket,"Packet Loss: None\n");
 				}
 				else{
-					sprintf(lostPacket, "Packet Loss: *\n");
+					sprintf(lostPacket, "Packet Loss: Yes\n");
 				}
 				parseJSON(Recvbuff);
 				ST7735_OutString(adc);
 				ST7735_OutString(lostPacket);
 				
-				strcpy(HostName,"ee445l-fm7869.appspot.com"); // works 9/2016
+				strcpy(HostName,"ee445l-fm7869.appspot.com");
 				retVal = sl_NetAppDnsGetHostByName(HostName,
              strlen(HostName),&DestinationIP, SL_AF_INET);
 				if(retVal == 0){
@@ -443,7 +446,7 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 						retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
 					}
 					if((SockID >= 0)&&(retVal >= 0)){
-						strcpy(SendBuff,REQUEST1); 
+						strcpy(SendBuff,GetRequest); 
 						sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
 						sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
 						sl_Close(SockID);
@@ -468,13 +471,13 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
             }
             average /= 10;
 
-						sprintf(minTimeS, "Min Time = %d\n", minTime);
+						sprintf(minTimeS, "Min Time = %d ms\n", (minTime /80000));
 						ST7735_OutString(minTimeS);
 
-						sprintf(maxTimeS, "Max Time = %d\n", maxTime);
+						sprintf(maxTimeS, "Max Time = %d ms\n", (maxTime / 80000));
 						ST7735_OutString(maxTimeS);
 						
-						sprintf(avgTimeS, "Avg Time = %d\n", average);
+						sprintf(avgTimeS, "Avg Time = %d ms\n", (average / 80000));
 						ST7735_OutString(avgTimeS);
     }
 		else{	//Clears previous Measurements
