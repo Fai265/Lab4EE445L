@@ -455,4 +455,14 @@ void Output_On(void);
 // Output: none
 void Output_Color(uint32_t newColor);
 
+
+// ************** ST7735_BresenhamLine ************************
+// Draws lines on screen according to the Bresenham algorithm
+// Input:  x1,y1 - starting points of line
+//	   x2,y2 - ending points of line
+//	   color - color of line 
+// Output: none
+// ********************************************************
+void ST7735_BresenhamLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
+	 uint16_t color);
 #endif

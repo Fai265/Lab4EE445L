@@ -3,12 +3,17 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-C:\Keil\EE445L\Lab4EE445L\getWeather.uvproj
-Project File Date:  09/29/2017
+C:\Users\Cooper\Documents\GitHub\Lab4EE445L\getWeather.uvproj
+Project File Date:  10/01/2017
 
 <h2>Output:</h2>
 Rebuild target 'getWeather'
 compiling main.c...
+..\ClockScreen\Clockscreen.h(14): warning:  #1295-D: Deprecated declaration Analog_Clock - give arg types
+  void Analog_Clock();
+..\Time\Time.h(44): warning:  #1-D: last line of file ends without a newline
+  void Alarm_Buzz(void);
+main.c: 2 warnings, 0 errors
 compiling board.c...
 compiling Nokia5110.c...
 compiling LED.c...
@@ -27,22 +32,60 @@ compiling uart.c...
 compiling wlan.c...
 compiling uartstdio.c...
 compiling ustdlib.c...
+compiling SysTick.c...
+compiling ClockScreen.c...
+..\ClockScreen\..\Time\Time.h(44): warning:  #1-D: last line of file ends without a newline
+  void Alarm_Buzz(void);
+..\ClockScreen\ClockScreen.c(835): warning:  #223-D: function "Set_Menu" declared implicitly
+        Set_Menu(0);                    //tells the system you're no longer in a menu
+..\ClockScreen\ClockScreen.c: 2 warnings, 0 errors
 compiling ST7735.c...
-ST7735.c(1633): warning:  #223-D: function "abs" declared implicitly
-                        ST7735_DrawFastVLine(x1, y1,abs(y2-y1), color);
-ST7735.c(1635): warning:  #223-D: function "abs" declared implicitly
-                        ST7735_DrawFastVLine(x1, y2,abs(y1-y2), color);
-ST7735.c(1641): warning:  #223-D: function "abs" declared implicitly
-                        ST7735_DrawFastHLine(x1, y1, abs(x1-x2), color);
-ST7735.c(1643): warning:  #223-D: function "abs" declared implicitly
-                        ST7735_DrawFastHLine(x2, y1, abs(x2-x1), color);
-ST7735.c(1647): warning:  #223-D: function "abs" declared implicitly
-        int dx = abs(x2-x1);
-ST7735.c: 5 warnings, 0 errors
+..\ST7735_4C123\ST7735.c(1651): warning:  #223-D: function "abs" declared implicitly
+                        ST7735_DrawFastVLine(x1, y1, abs(y2 - y1), color);
+..\ST7735_4C123\ST7735.c(1654): warning:  #223-D: function "abs" declared implicitly
+                        ST7735_DrawFastVLine(x1, y2, abs(y1 - y2), color);
+..\ST7735_4C123\ST7735.c(1660): warning:  #223-D: function "abs" declared implicitly
+                        ST7735_DrawFastHLine(x1, y1, abs(x1 - x2), color);
+..\ST7735_4C123\ST7735.c(1663): warning:  #223-D: function "abs" declared implicitly
+                        ST7735_DrawFastHLine(x2, y1, abs(x2 - x1), color);
+..\ST7735_4C123\ST7735.c(1667): warning:  #223-D: function "abs" declared implicitly
+        int dx = abs(x2 - x1);
+..\ST7735_4C123\ST7735.c: 5 warnings, 0 errors
+compiling Time.c...
+..\Time\Time.c(19): warning:  #223-D: function "DisableInterrupts" declared implicitly
+        DisableInterrupts();                    //Disable interrupts in critical section, don't want 1:59 + 0:01 = 1:00
+..\Time\Time.c(24): warning:  #223-D: function "EnableInterrupts" declared implicitly
+        EnableInterrupts();                             //Critical section over
+..\Time\Time.c(25): warning:  #223-D: function "digital_Print" declared implicitly
+        digital_Print(0);
+..\Time\Time.c(30): warning:  #223-D: function "Main_Menu" declared implicitly
+                        Main_Menu();
+..\Time\Time.c(37): warning:  #223-D: function "DisableInterrupts" declared implicitly
+        DisableInterrupts();
+..\Time\Time.c(42): warning:  #223-D: function "EnableInterrupts" declared implicitly
+        EnableInterrupts();
+..\Time\Time.c(43): warning:  #223-D: function "digital_Print" declared implicitly
+        digital_Print(1);
+..\Time\Time.c(49): warning:  #223-D: function "Main_Menu" declared implicitly
+                        Main_Menu();
+..\Time\Time.c(132): warning:  #223-D: function "Activate_Alarm" declared implicitly
+        Activate_Alarm();
+..\Time\Time.c(137): warning:  #1-D: last line of file ends without a newline
+  }
+..\Time\Time.c(11): warning:  #177-D: variable "AlarmSecond" was declared but never referenced
+  static int AlarmSecond=0;
+..\Time\Time.c: 11 warnings, 0 errors
 linking...
-Program Size: Code=16948 RO-data=3972 RW-data=104 ZI-data=19512  
-After Build - User command #1: fromelf --bin --output .\rvmdk\cc31000_starter.bin .\rvmdk\cc31000_starter.axf
-".\rvmdk\getWeather.axf" - 0 Error(s), 5 Warning(s).
-4 ZI-data=19512  
-After Build - User command #1: fromelf --bin --output .\rvmdk\cc31000_starter.bin .\rvmdk\cc31000_starter.axf
-".\rvmdk\getWeather.axf" - 0 Error(s), 6 Warning(s).
+.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Double_Hold_Check (referred from clockscreen.o).
+.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Set_Menu (referred from clockscreen.o).
+.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Activate_Alarm (referred from time.o).
+.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol DisableInterrupts (referred from time.o).
+.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol EnableInterrupts (referred from time.o).
+.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Main_Menu (referred from time.o).
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 6 error messages.
+".\rvmdk\getWeather.axf" - 6 Error(s), 20 Warning(s).
+Target not created
+</pre>
+</body>
+</html>
