@@ -195,6 +195,9 @@ UINT32  g_Status = 0;
  */
 
 static int32_t configureSimpleLinkToDefaultState(char *);
+static int hour;
+static int minute;
+static int second;
 
 
 /*
@@ -212,12 +215,13 @@ void Crash(uint32_t time){
 int parseJSON(char recvbuff[]){
 	int i = 0;
 	int timeFlag = 0; int tempFlag = 0;
-	char tempString[16] = "Temp = **.*** C\n";
-	char timeString[16] = "Time = **:**:**\n";
+	char tempString[17] = "Temp = **.*** C\n";
+	char timeString[17] = "Time = **:**:**\n";
 	while(recvbuff[i] != NULL){
 		if(recvbuff[i] == 'D' && recvbuff[i+1] == 'a'
 				&& recvbuff[i+2] == 't' && recvbuff[i+3] == 'e'){
 				i += 23;
+<<<<<<< HEAD
 				int k = 7;	//Start of the time values in timeString
 				for(int j = 0; j < 9; j++){
 					if(k == 10 || k == 13){
@@ -225,13 +229,42 @@ int parseJSON(char recvbuff[]){
 					}
 					timeString[k+j] = recvbuff[i+j];
 				}
+=======
+				int j = 0;
+				hour = (int) (recvbuff[i + j] - 0x30) * 10 
+					+ (int) (recvbuff[i + j + 1] - 0x30);
+				
+				hour = (hour + 19) % 24;	//Convert from GMT to CST
+				
+				timeString[7 + j] = (char) ((hour / 10) + 0x30);
+				timeString[7 + j + 1] = (char) ((hour % 10) + 0x30);
+				
+				j += 3;
+				
+				minute = (int) (recvbuff[i + j] - 0x30) * 10 
+					+ (int) (recvbuff[i + j + 1] - 0x30);
+				
+				timeString[7 + j] = (char) ((minute / 10) + 0x30);
+				timeString[7 + j + 1] = (char) ((minute % 10) + 0x30);
+				
+				j += 3;
+				
+				second = (int) (recvbuff[i + j] - 0x30) * 10 
+					+ (int) (recvbuff[i + j + 1] - 0x30);
+
+				timeString[7 + j] = (char) ((second / 10) + 0x30);
+				timeString[7 + j + 1] = (char) ((second % 10) + 0x30);
+				
+				j += 3;
+>>>>>>> origin/master
 				
 				ST7735_OutString(timeString);
 				timeFlag = 1;
 		}
 		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e'//Looks for "temp" in the string
-				&& recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'){
-					i += 6;																//Set the index to after "temp":
+				&& recvbuff[i+2] == 'm' && recvbuff[i+3] == 'p'
+				&& recvbuff[i+4] == '"'){
+			i += 6;																		//Set the index to after "temp":
 			if(recvbuff[i] == '0'){										//If temperature is not double-digit
 				tempString[7] = ' ';										//Space instead of '0' for first char
 			}else{
@@ -337,7 +370,11 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
     _SlNonOsMainLoopTask();
   }
   UARTprintf("Connected\n");
+<<<<<<< HEAD
 	int callCount=0;
+=======
+	int callCount = 0;
+>>>>>>> origin/master
 	int timeTaken[10];
   while(1){
    // strcpy(HostName,"openweathermap.org");  // used to work 10/2015
@@ -355,16 +392,22 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
       }
       if((SockID >= 0)&&(retVal >= 0)){
         strcpy(SendBuff,REQUEST); 
+<<<<<<< HEAD
 				//start
+=======
+>>>>>>> origin/master
 				int startTime=NVIC_ST_CURRENT_R;
         sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
         sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
 				int endTime=NVIC_ST_CURRENT_R;
 				timeTaken[callCount]=startTime-endTime;
+<<<<<<< HEAD
 				//stop
 				
 				
 			
+=======
+>>>>>>> origin/master
         sl_Close(SockID);
         LED_GreenOn();
         UARTprintf("\r\n\r\n");
@@ -405,11 +448,19 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 		ST7735_SetCursor(0,0);
 		callCount++;
 		if(callCount==10){
+<<<<<<< HEAD
 			int average=0; 
 			for(int i=0;i<10;i++){
 				average+=timeTaken[i];
 			}
 			average/=10;
+=======
+            int average=0; 
+            for(int i=0;i<10;i++){
+                average+=timeTaken[i];
+            }
+            average/=10;
+>>>>>>> origin/master
     }
   }
 }
