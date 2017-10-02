@@ -70,8 +70,8 @@ class MainPage(webapp2.RequestHandler):
         # [END query]
 
         for greeting in greetings:
-            self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s)' %
-                                        (greeting.author, greeting.city, greeting.greet, greeting.ipaddr))
+            self.response.write('<b>%s@%s</b>: <i>%s</i> <img src="Clear.png" alt="%s" style="width:32px;height:32px;"> (accessed from %s) ' %
+                                        (greeting.author, greeting.city, greeting.greet, greeting.greet, greeting.ipaddr))
             self.response.write('<hr>')
 
 class Auto(webapp2.RequestHandler):

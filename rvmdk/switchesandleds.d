@@ -1,0 +1,9 @@
+.\rvmdk\switchesandleds.o: ..\Hardware\SwitchesAndLEDs.c
+.\rvmdk\switchesandleds.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\rvmdk\switchesandleds.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\rvmdk\switchesandleds.o: ..\Hardware\..\inc\tm4c123gh6pm.h
+.\rvmdk\switchesandleds.o: ..\Hardware\..\inc\ST7735.h
+.\rvmdk\switchesandleds.o: C:\Keil\ARM\ARMCC\bin\..\include\Time.h
+.\rvmdk\switchesandleds.o: ..\Hardware\..\SysTick_4C123\SysTick.h
+.\rvmdk\switchesandleds.o: ..\Hardware\..\ClockScreen\ClockScreen.h
+.\rvmdk\switchesandleds.o: ..\Hardware\..\SysTick_4C123\SysTick.h

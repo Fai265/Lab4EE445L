@@ -107,7 +107,7 @@ Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
 #define PASSKEY    "dpmx1476"
 #define BAUD_RATE   115200
 
-#define REQUEST1 "GET /query?city=Austin&id=CooperFaisal&greet=1.765&edxcode=8086 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-fm7869.appspot.com\r\n\r\n"
+#define REQUEST1 "GET /query?city=Austin&id=CooperFaisal&greet=%s&edxcode=8086 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-fm7869.appspot.com\r\n\r\n"
 void UART_Init(void){
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
@@ -217,19 +217,27 @@ int parseJSON(char recvbuff[]){
 	int timeFlag = 0; int tempFlag = 0;
 	char tempString[17] = "Temp = **.*** C\n";
 	char timeString[17] = "Time = **:**:**\n";
+	char weatherString[10];
 	while(recvbuff[i] != NULL){
+		if(recvbuff[i] == 'w' && recvbuff[i+1] == 'e' &&
+				recvbuff[i+2] == 'a' && recvbuff[i+3] == 't' &&
+				recvbuff[i+4] == 'h' && recvbuff[i+5] == 'e' &&
+				recvbuff[i+6] == 'r' && recvbuff[i+7] == '"' &&
+				recvbuff[i+8] == ':'){
+			i += 28;
+			int weatherIndex = 0;
+			while(recvbuff[i] != '"'){
+				weatherString[weatherIndex] = recvbuff[i];
+				weatherIndex++;
+				i++;
+			}
+			weatherString[weatherIndex] = '\0';
+			
+			sprintf(REQUEST1, weatherString);
+		}
 		if(recvbuff[i] == 'D' && recvbuff[i+1] == 'a'
 				&& recvbuff[i+2] == 't' && recvbuff[i+3] == 'e'){
 				i += 23;
-<<<<<<< HEAD
-				int k = 7;	//Start of the time values in timeString
-				for(int j = 0; j < 9; j++){
-					if(k == 10 || k == 13){
-						k++;
-					}
-					timeString[k+j] = recvbuff[i+j];
-				}
-=======
 				int j = 0;
 				hour = (int) (recvbuff[i + j] - 0x30) * 10 
 					+ (int) (recvbuff[i + j + 1] - 0x30);
@@ -256,7 +264,6 @@ int parseJSON(char recvbuff[]){
 				timeString[7 + j + 1] = (char) ((second % 10) + 0x30);
 				
 				j += 3;
->>>>>>> origin/master
 				
 				ST7735_OutString(timeString);
 				timeFlag = 1;
@@ -292,11 +299,12 @@ int parseJSON(char recvbuff[]){
 	else{return 0;}
 }
 
-/*void screen_Init(){
-	ST7735_InitR(INITR_REDTAB);
-	ST7735_FillScreen(ST7735_BLACK);
-	ST7735_SetCursor(0,0);
-}*/
+//void screen_Init(){
+//	ST7735_InitR(INITR_REDTAB);
+//	ST7735_FillScreen(ST7735_BLACK);
+
+//	ST7735_SetCursor(0,0);
+//}
 
 void ADC0_InitSWTriggerSeq3_Ch9(uint32_t sampling){ 
   SYSCTL_RCGCADC_R |= 0x0001;     // 7) activate ADC0                               
@@ -348,8 +356,18 @@ volatile uint32_t ADCValue;
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 int main(void){int32_t retVal;  SlSecParams_t secParams;
   char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
-	//char temperature[16] = "Temp = **.*** C\n";
-	//char adc[14] = "Voltage: *.***";
+	int callCount = 0;
+	int packetRx = 0;
+	int packetTx = 0;
+	int timeTaken[10] = {0};
+	int average = 0;
+	int minTime = 0;
+	int maxTime = 0;
+	char minTimeS[16];
+	char maxTimeS[16];
+	char avgTimeS[16];
+	char lostPacket[5];
+	
 	char adc[14] = "";
   initClk();        // PLL 50 MHz
 	screen_Init();
@@ -370,12 +388,6 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
     _SlNonOsMainLoopTask();
   }
   UARTprintf("Connected\n");
-<<<<<<< HEAD
-	int callCount=0;
-=======
-	int callCount = 0;
->>>>>>> origin/master
-	int timeTaken[10];
   while(1){
    // strcpy(HostName,"openweathermap.org");  // used to work 10/2015
     strcpy(HostName,"api.openweathermap.org"); // works 9/2016
@@ -391,23 +403,13 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
         retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
       }
       if((SockID >= 0)&&(retVal >= 0)){
-        strcpy(SendBuff,REQUEST); 
-<<<<<<< HEAD
-				//start
-=======
->>>>>>> origin/master
+        strcpy(SendBuff,REQUEST);
+				NVIC_ST_CURRENT_R = 0;	//any write to current clears it
 				int startTime=NVIC_ST_CURRENT_R;
         sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
-        sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
+        packetRx = sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
 				int endTime=NVIC_ST_CURRENT_R;
-				timeTaken[callCount]=startTime-endTime;
-<<<<<<< HEAD
-				//stop
-				
-				
-			
-=======
->>>>>>> origin/master
+				timeTaken[callCount]=endTime-startTime;
         sl_Close(SockID);
         LED_GreenOn();
         UARTprintf("\r\n\r\n");
@@ -418,9 +420,15 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 				
 				sprintf(adc,"Voltage: %01d.%01d%01d%01d\n", ((voltage/1000)),
 					((voltage/100)%10), ((voltage/10)%10),((voltage%10)));
-				
+				if(packetRx > 0){
+					sprintf(lostPacket,"Packet Loss: %d\n", (packetRx - packetTx));
+				}
+				else{
+					sprintf(lostPacket, "Packet Loss: *\n");
+				}
 				parseJSON(Recvbuff);
 				ST7735_OutString(adc);
+				ST7735_OutString(lostPacket);
 				
 				strcpy(HostName,"ee445l-fm7869.appspot.com"); // works 9/2016
 				retVal = sl_NetAppDnsGetHostByName(HostName,
@@ -443,25 +451,41 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 					}
       }
     }
-    while(Board_Input()==0){}; // wait for touch
-    LED_GreenOff();
-		ST7735_SetCursor(0,0);
 		callCount++;
 		if(callCount==10){
-<<<<<<< HEAD
-			int average=0; 
-			for(int i=0;i<10;i++){
-				average+=timeTaken[i];
-			}
-			average/=10;
-=======
-            int average=0; 
+						minTime = timeTaken[0];
+						maxTime = timeTaken[0];
+            average = 0;
+						callCount = 0;
             for(int i=0;i<10;i++){
                 average+=timeTaken[i];
+								if(minTime > timeTaken[i]){
+									minTime = timeTaken[i];
+								}
+								if(maxTime < timeTaken[i]){
+									maxTime = timeTaken[i];
+								}
             }
-            average/=10;
->>>>>>> origin/master
+            average /= 10;
+
+						sprintf(minTimeS, "Min Time = %d\n", minTime);
+						ST7735_OutString(minTimeS);
+
+						sprintf(maxTimeS, "Max Time = %d\n", maxTime);
+						ST7735_OutString(maxTimeS);
+						
+						sprintf(avgTimeS, "Avg Time = %d\n", average);
+						ST7735_OutString(avgTimeS);
     }
+		else{	//Clears previous Measurements
+			ST7735_OutString("\n");
+			ST7735_OutString("\n");
+			ST7735_OutString("\n");
+		}
+		ST7735_SetCursor(0,0);
+		
+    while(Board_Input()==0){}; // wait for touch
+    LED_GreenOff();
   }
 }
 
@@ -753,5 +777,4 @@ void SimpleLinkSockEventHandler(SlSockEvent_t *pSock){
 /*
  * * ASYNCHRONOUS EVENT HANDLERS -- End
  */
-
 
