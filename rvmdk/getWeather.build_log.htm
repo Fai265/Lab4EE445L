@@ -17,19 +17,23 @@ compiling main.c...
   void Alarm_Time_Set();
 ..\Time\Time.h(53): warning:  #1295-D: Deprecated declaration Time_Keep - give arg types
   void Time_Keep();
-..\Time\Time.h(94): warning:  #1295-D: Deprecated declaration Clock_Hour_Return - give arg types
+..\Time\Time.h(97): warning:  #1295-D: Deprecated declaration Clock_Hour_Return - give arg types
   int Clock_Hour_Return();
-..\Time\Time.h(106): warning:  #1295-D: Deprecated declaration Clock_Minute_Return - give arg types
+..\Time\Time.h(109): warning:  #1295-D: Deprecated declaration Clock_Minute_Return - give arg types
   int Clock_Minute_Return();
-..\Time\Time.h(118): warning:  #1295-D: Deprecated declaration Clock_Second_Return - give arg types
+..\Time\Time.h(121): warning:  #1295-D: Deprecated declaration Clock_Second_Return - give arg types
   int Clock_Second_Return();
-..\Time\Time.h(196): warning:  #1295-D: Deprecated declaration Alarm_Minute_Return - give arg types
+..\Time\Time.h(199): warning:  #1295-D: Deprecated declaration Alarm_Minute_Return - give arg types
   int Alarm_Minute_Return();
-..\Time\Time.h(209): warning:  #1295-D: Deprecated declaration Alarm_Hour_Return - give arg types
+..\Time\Time.h(212): warning:  #1295-D: Deprecated declaration Alarm_Hour_Return - give arg types
   int Alarm_Hour_Return();
-main.c(373): warning:  #223-D: function "screen_Init" declared implicitly
+main.c(363): warning:  #223-D: function "DisableInterrupts" declared implicitly
+        DisableInterrupts();
+main.c(378): warning:  #223-D: function "screen_Init" declared implicitly
         screen_Init();
-main.c: 10 warnings, 0 errors
+main.c(416): warning:  #223-D: function "EnableInterrupts" declared implicitly
+                                EnableInterrupts();
+main.c: 12 warnings, 0 errors
 compiling board.c...
 compiling Nokia5110.c...
 compiling LED.c...
@@ -49,6 +53,27 @@ compiling wlan.c...
 compiling uartstdio.c...
 compiling ustdlib.c...
 compiling SysTick.c...
+..\SysTick_4C123\../Time/Time.h(23): warning:  #1295-D: Deprecated declaration Clock_Time_Set - give arg types
+  void Clock_Time_Set();
+..\SysTick_4C123\../Time/Time.h(38): warning:  #1295-D: Deprecated declaration Alarm_Time_Set - give arg types
+  void Alarm_Time_Set();
+..\SysTick_4C123\../Time/Time.h(53): warning:  #1295-D: Deprecated declaration Time_Keep - give arg types
+  void Time_Keep();
+..\SysTick_4C123\../Time/Time.h(97): warning:  #1295-D: Deprecated declaration Clock_Hour_Return - give arg types
+  int Clock_Hour_Return();
+..\SysTick_4C123\../Time/Time.h(109): warning:  #1295-D: Deprecated declaration Clock_Minute_Return - give arg types
+  int Clock_Minute_Return();
+..\SysTick_4C123\../Time/Time.h(121): warning:  #1295-D: Deprecated declaration Clock_Second_Return - give arg types
+  int Clock_Second_Return();
+..\SysTick_4C123\../Time/Time.h(199): warning:  #1295-D: Deprecated declaration Alarm_Minute_Return - give arg types
+  int Alarm_Minute_Return();
+..\SysTick_4C123\../Time/Time.h(212): warning:  #1295-D: Deprecated declaration Alarm_Hour_Return - give arg types
+  int Alarm_Hour_Return();
+..\SysTick_4C123\SysTick.c(75): warning:  #223-D: function "Digital_Print" declared implicitly
+                Digital_Print(0);
+..\SysTick_4C123\SysTick.c(72): warning:  #177-D: variable "currentMinute" was declared but never referenced
+        static int currentMinute=0;
+..\SysTick_4C123\SysTick.c: 10 warnings, 0 errors
 compiling ClockScreen.c...
 ..\ClockScreen\..\Hardware\SwitchesAndLEDs.h(120): warning:  #1295-D: Deprecated declaration Activate_Alarm - give arg types
   void Activate_Alarm();
@@ -60,17 +85,21 @@ compiling ClockScreen.c...
   void Alarm_Time_Set();
 ..\ClockScreen\..\Time\Time.h(53): warning:  #1295-D: Deprecated declaration Time_Keep - give arg types
   void Time_Keep();
-..\ClockScreen\..\Time\Time.h(94): warning:  #1295-D: Deprecated declaration Clock_Hour_Return - give arg types
+..\ClockScreen\..\Time\Time.h(97): warning:  #1295-D: Deprecated declaration Clock_Hour_Return - give arg types
   int Clock_Hour_Return();
-..\ClockScreen\..\Time\Time.h(106): warning:  #1295-D: Deprecated declaration Clock_Minute_Return - give arg types
+..\ClockScreen\..\Time\Time.h(109): warning:  #1295-D: Deprecated declaration Clock_Minute_Return - give arg types
   int Clock_Minute_Return();
-..\ClockScreen\..\Time\Time.h(118): warning:  #1295-D: Deprecated declaration Clock_Second_Return - give arg types
+..\ClockScreen\..\Time\Time.h(121): warning:  #1295-D: Deprecated declaration Clock_Second_Return - give arg types
   int Clock_Second_Return();
-..\ClockScreen\..\Time\Time.h(196): warning:  #1295-D: Deprecated declaration Alarm_Minute_Return - give arg types
+..\ClockScreen\..\Time\Time.h(199): warning:  #1295-D: Deprecated declaration Alarm_Minute_Return - give arg types
   int Alarm_Minute_Return();
-..\ClockScreen\..\Time\Time.h(209): warning:  #1295-D: Deprecated declaration Alarm_Hour_Return - give arg types
+..\ClockScreen\..\Time\Time.h(212): warning:  #1295-D: Deprecated declaration Alarm_Hour_Return - give arg types
   int Alarm_Hour_Return();
-..\ClockScreen\ClockScreen.c: 10 warnings, 0 errors
+..\ClockScreen\ClockScreen.c(826): warning:  #223-D: function "Return_XPos" declared implicitly
+        int X = Return_XPos();
+..\ClockScreen\ClockScreen.c(827): warning:  #223-D: function "Return_YPos" declared implicitly
+        int Y = Return_YPos();
+..\ClockScreen\ClockScreen.c: 12 warnings, 0 errors
 compiling Time.c...
 ..\Time\..\Hardware\SwitchesAndLEDs.h(120): warning:  #1295-D: Deprecated declaration Activate_Alarm - give arg types
   void Activate_Alarm();
@@ -136,48 +165,15 @@ compiling SwitchesAndLEDs.c...
   }
 ..\Hardware\SwitchesAndLEDs.c: 18 warnings, 0 errors
 linking...
-Program Size: Code=17568 RO-data=3972 RW-data=116 ZI-data=19508  
+Program Size: Code=17992 RO-data=3972 RW-data=144 ZI-data=20048  
 After Build - User command #1: fromelf --bin --output .\rvmdk\cc31000_starter.bin .\rvmdk\cc31000_starter.axf
-".\rvmdk\getWeather.axf" - 0 Error(s), 49 Warning(s).
+".\rvmdk\getWeather.axf" - 0 Error(s), 63 Warning(s).
 Load "C:\\Keil\\EE445L\\Lab4EE445L\\rvmdk\\getWeather.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
-g...
-Program Size: Code=17544 RO-data=3972 RW-data=116 ZI-data=19508  
-After Build - User command #1: fromelf --bin --output .\rvmdk\cc31000_starter.bin .\rvmdk\cc31000_starter.axf
-".\rvmdk\getWeather.axf" - 0 Error(s), 52 Warning(s).
-linking...
-.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol DisableInterrupts (referred from switchesandleds.o).
-.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol EnableInterrupts (referred from switchesandleds.o).
-Not enough information to list image symbols.
-Finished: 1 information, 0 warning and 2 error messages.
-".\rvmdk\getWeather.axf" - 2 Error(s), 52 Warning(s).
-Target not created
-rrupts (referred from time.o).
-Not enough information to list image symbols.
-Finished: 1 information, 0 warning and 2 error messages.
-".\rvmdk\getWeather.axf" - 2 Error(s), 54 Warning(s).
-Target not created
-k Minute by intervals of 5
-..\Hardware\SwitchesAndLEDs.c(389): warning:  #223-D: function "Alarm_Minute_Increment" declared implicitly
-                                                Alarm_Minute_Increment(5);//Increment Alarm Minute by intervals of 5
-..\Hardware\SwitchesAndLEDs.c(395): warning:  #223-D: function "EnableInterrupts" declared implicitly
-                EnableInterrupts();                                                                                     //Critical section over
-..\Hardware\SwitchesAndLEDs.c(408): warning:  #1-D: last line of file ends without a newline
-  }
-..\Hardware\SwitchesAndLEDs.c: 21 warnings, 0 errors
-".\rvmdk\getWeather.axf" - 2 Error(s), 61 Warning(s).
-Target not created
-from switchesandleds.o).
-Not enough information to list image symbols.
-Finished: 1 information, 0 warning and 4 error messages.
-".\rvmdk\getWeather.axf" - 4 Error(s), 59 Warning(s).
-Target not created
-screen.o).
-.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol DisableInterrupts (referred from time.o).
-.\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol EnableInterrupts (referred from time.o).
+EnableInterrupts (referred from time.o).
 .\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Main_Menu (referred from time.o).
 .\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Menu_On (referred from switchesandleds.o).
 .\rvmdk\getWeather.axf: Error: L6218E: Undefined symbol Move_Down (referred from switchesandleds.o).

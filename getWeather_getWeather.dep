@@ -1,5 +1,5 @@
 Dependencies for Project 'getWeather', Target 'getWeather': (DO NOT MODIFY !)
-F (.\main.c)(0x59D25CDA)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\main.o --omf_browse .\rvmdk\main.crf --depend .\rvmdk\main.d)
+F (.\main.c)(0x59D27019)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\main.o --omf_browse .\rvmdk\main.crf --depend .\rvmdk\main.d)
 I (..\cc3100\simplelink\include\simplelink.h)(0x59B023BE)
 I (..\cc3100\platform\ek-tm4c123gxl\user.h)(0x59B023BC)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C88A34)
@@ -33,7 +33,7 @@ I (LED.h)(0x59B02497)
 I (Nokia5110.h)(0x59B02497)
 I (ST7735.h)(0x59D184C5)
 I (..\ClockScreen\Clockscreen.h)(0x59CF0789)
-I (..\Time\Time.h)(0x59CF09D5)
+I (..\Time\Time.h)(0x59D26964)
 I (tm4c123gh6pm.h)(0x59BEB368)
 I (..\SysTick_4C123\SysTick.h)(0x59B02473)
 I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C88A34)
@@ -271,7 +271,7 @@ I (..\driverlib/rom.h)(0x59B023F5)
 I (..\driverlib/gpio.h)(0x59B023F2)
 I (..\driverlib/sysctl.h)(0x59B023F5)
 I (..\driverlib/interrupt.h)(0x59B023F3)
-F (.\startup_rvmdk.S)(0x59B02497)(--cpu Cortex-M4.fp -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-o .\rvmdk\startup_rvmdk.o --depend .\rvmdk\startup_rvmdk.d)
+F (.\startup_rvmdk.S)(0x59D27017)(--cpu Cortex-M4.fp -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-o .\rvmdk\startup_rvmdk.o --depend .\rvmdk\startup_rvmdk.d)
 F (..\cc3100\platform\ek-tm4c123gxl\uart.c)(0x59B023BC)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\uart.o --omf_browse .\rvmdk\uart.crf --depend .\rvmdk\uart.d)
 F (..\cc3100\simplelink\source\wlan.c)(0x59B023C0)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\wlan.o --omf_browse .\rvmdk\wlan.crf --depend .\rvmdk\wlan.d)
 I (..\cc3100\simplelink\source\datatypes.h)(0x59B023BE)
@@ -313,18 +313,19 @@ I (..\driverlib/debug.h)(0x59B023F0)
 I (..\utils/ustdlib.h)(0x59B02488)
 I (C:\Keil\ARM\ARMCC\include\stdarg.h)(0x51C88A34)
 I (C:\Keil\ARM\ARMCC\include\time.h)(0x51C88A34)
-F (..\SysTick_4C123\SysTick.c)(0x59B02473)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\systick.o --omf_browse .\rvmdk\systick.crf --depend .\rvmdk\systick.d)
+F (..\SysTick_4C123\SysTick.c)(0x59D27246)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\systick.o --omf_browse .\rvmdk\systick.crf --depend .\rvmdk\systick.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
+I (..\SysTick_4C123\../Time/Time.h)(0x59D26964)
 I (..\SysTick_4C123\../inc/tm4c123gh6pm.h)(0x59B0241D)
 F (..\ClockScreen\ClockScreen.h)(0x59CF0789)()
-F (..\ClockScreen\ClockScreen.c)(0x59D18B31)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\clockscreen.o --omf_browse .\rvmdk\clockscreen.crf --depend .\rvmdk\clockscreen.d)
+F (..\ClockScreen\ClockScreen.c)(0x59D26F42)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\clockscreen.o --omf_browse .\rvmdk\clockscreen.crf --depend .\rvmdk\clockscreen.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
 I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C88A34)
 I (..\ClockScreen\..\Lab4EE445L\ST7735.h)(0x59D184C5)
 I (..\ClockScreen\..\Hardware\SwitchesAndLEDs.h)(0x59CF0869)
-I (..\ClockScreen\..\Time\Time.h)(0x59CF09D5)
+I (..\ClockScreen\..\Time\Time.h)(0x59D26964)
 I (..\ClockScreen\..\SysTick_4C123\Systick.h)(0x59B02473)
-F (..\Time\Time.c)(0x59D18C2B)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\time.o --omf_browse .\rvmdk\time.crf --depend .\rvmdk\time.d)
+F (..\Time\Time.c)(0x59D268B2)(-c --cpu Cortex-M4.fp -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\ -I..\..\..\.. -I..\cc3100 -I..\cc3100\platform\ek-tm4c123gxl -I..\cc3100\simplelink\include -I..\cc3100\simplelink\source --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_TM4C123GH6PM -D_POSIX_SOURCE -DUART_BUFFERED -DTARGET_IS_TM4C123_RB1-o .\rvmdk\time.o --omf_browse .\rvmdk\time.crf --depend .\rvmdk\time.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
 I (..\Time\../inc/tm4c123gh6pm.h)(0x59B0241D)
 I (..\Time\..\inc\ST7735.h)(0x59BEB367)

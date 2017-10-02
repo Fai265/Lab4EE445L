@@ -71,7 +71,7 @@ class MainPage(webapp2.RequestHandler):
 
         response = '<b>%s@%s</b>: <i>%s</i> <img src="%s.png" alt="%s" style="width:32px;height:32px;"> (accessed from %s) '
         for greeting in greetings:
-            if(greeting.greet in {'Clear', 'Clouds', 'Rain', 'Snow', 'Haze'}):
+            if(greeting.greet in {'Clear', 'Clouds', 'Rain', 'Snow', 'Haze', 'Mist'}):
                 self.response.write( response % (greeting.author, greeting.city, greeting.greet, greeting.greet, greeting.greet, greeting.ipaddr))
             else:
                 self.response.write('<b>%s@%s</b>: <i>%s</i> <img src="Clear.png" alt="Clear" style="width:32px;height:32px;"> (accessed from %s) ' %

@@ -269,6 +269,8 @@ int parseJSON(char recvbuff[]){
 				j += 3;
 				
 				ST7735_OutString(timeString);
+				NVIC_ST_CURRENT_R = 0;                // any write to current clears it
+				Time_Set(hour, minute, second);
 				timeFlag = 1;
 		}
 		if(recvbuff[i] == 't' && recvbuff[i+1] == 'e'//Looks for "temp" in the string
@@ -358,10 +360,10 @@ volatile uint32_t ADCValue;
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 int main(void){int32_t retVal;  SlSecParams_t secParams;
+	DisableInterrupts();
   char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
 	int callCount = 0;
 	int packetRx = 0;
-	int packetTx = 0;
 	int timeTaken[10] = {0};
 	int average = 0;
 	int minTime = 0;
@@ -411,6 +413,7 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
 				int startTime=NVIC_ST_CURRENT_R;
         sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
         packetRx = sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
+				EnableInterrupts();
 				int endTime=NVIC_ST_CURRENT_R;
 				timeTaken[callCount]=endTime-startTime;
         sl_Close(SockID);
