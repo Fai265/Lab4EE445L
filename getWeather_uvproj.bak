@@ -506,21 +506,6 @@
               <FilePath>..\SysTick_4C123\SysTick.c</FilePath>
             </File>
             <File>
-              <FileName>ST7735.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ST7735_4C123\ST7735.c</FilePath>
-            </File>
-            <File>
-              <FileName>Time.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Time\Time.c</FilePath>
-            </File>
-            <File>
-              <FileName>Time.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Time\Time.h</FilePath>
-            </File>
-            <File>
               <FileName>ClockScreen.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\ClockScreen\ClockScreen.h</FilePath>
@@ -529,6 +514,21 @@
               <FileName>ClockScreen.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\ClockScreen\ClockScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>ST7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ST7735_4C123\ST7735.c</FilePath>
+            </File>
+            <File>
+              <FileName>ST7735.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\ST7735_4C123\ST7735.h</FilePath>
+            </File>
+            <File>
+              <FileName>Time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Time\Time.c</FilePath>
             </File>
           </Files>
         </Group>

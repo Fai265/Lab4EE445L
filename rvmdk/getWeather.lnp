@@ -20,9 +20,8 @@
 ".\rvmdk\ustdlib.o"
 ".\rvmdk\systick.o"
 ".\rvmdk\clockscreen.o"
-".\rvmdk\time.o"
 ".\rvmdk\st7735.o"
-".\rvmdk\switchesandleds.o"
+".\rvmdk\time.o"
 "..\driverlib\rvmdk\driverlib.lib"
 --library_type=microlib --strict --scatter "cc31000_starter.sct"
 
